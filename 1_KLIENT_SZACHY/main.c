@@ -33,15 +33,15 @@ int main() {
         if (status <= 0) { printf("blad recv\n"); break;}
 
         buf[status] = '\0';
-        printf("Otrzymalem: #%s#\n", buf);
-        if (strcmp(buf, "Q") == 0) {printf("Serwer zakonczyl polaczenie, domysl sie czy wygrales0647\n"); break;}
+        printf("Plansza:#%s#\n", buf);
+        if (strcmp(buf, "Q") == 0) {printf("Serwer zakonczyl polaczenie, domysl sie czy wygrales czy przegrales\n"); break;}
 
-        printf("podaj ruch: i/j\n");
+        printf("Poddaj sie: Q\npodaj ruch: i/j\n");
         scanf("%s", buf);
 
         status = send(gniazdo1, buf, strlen(buf),0); // wysyła z gniazda1 zawartość buffa o długości bufa na podany port adresu IP
         if (strcmp(buf, "Q") == 0) {printf("Zakonczyles polaczenie\n"); break;}
-        printf("wysylam: #%s#\n", buf);
+        //printf("wysylam: #%s#\n", buf);
     }
     closesocket(gniazdo1);
     WSACleanup();

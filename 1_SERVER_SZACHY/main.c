@@ -78,7 +78,7 @@ void wyswietl(SOCKET gniazdo1){        // wysylanie
     }
     status = send(gniazdo1, buf, strlen(buf),0); // wysylamy odpowiedz do gniazda 1, zawartosc buf, dlugosc bufa
     if (status <= 0) printf("blad wyslania\n");
-    printf("wysylam : #%s#\n", buf);
+    //printf("wysylam : #%s#\n", buf);
     return;
 }
 
@@ -194,6 +194,7 @@ int main()
     int status, dlugosc;
     struct sockaddr_in server, client;
     char buf[1024];
+    int blad=0;
 
     WSADATA wsaData; // przed inicjalizacją gniazd
     if (WSAStartup( MAKEWORD( 2, 0 ), &wsaData )){printf("blad WSDATA\n"); return 0;}
@@ -213,6 +214,7 @@ int main()
     dlugosc = sizeof client;
 
     while(1) {
+        blad=0;
         printf("Oczekiwanie na polaczenie...\n");
 
         // w przyszlosci
@@ -222,7 +224,7 @@ int main()
         gniazdo1 = accept(gniazdo_root, (struct sockaddr *) &client, &dlugosc);
         if (gniazdo1 == -1) {
             printf("blad accept\n");
-            return 0;
+            break;
         }
         else printf("zaakceptowano\n");
 
@@ -254,17 +256,14 @@ int main()
             while (!ruch) {
                 status = recv(gniazdo1, buf, sizeof(buf) - 1,0); // zapisanie danych przychodzacych z gniazda1 do buf, o wielkosci bufa
                 buf[status] = '\0';
-                if (status <= 0) {printf("blad recv\n");break;}
+                if (status <= 0) {blad=1;printf("blad recv\n");break;}
                 printf("Klient wyslal: #%s#\n", buf);
-                if (strcmp(buf, "Q") == 0) {printf("klient zakonczyl polaczenie\n");break;}
+                if (strcmp(buf, "Q") == 0) {printf("klient zakonczyl polaczenie\n");blad=1;break;}
                 x=buf[0] - '0';
                 y=buf[1] - '0';
                 x2=buf[2] - '0';
                 y2=buf[3] - '0';
-                printf("to co sie zapisalo do xyx2y2 %d%d%d%d\n", x,y,x2,y2);
-                //fscanf(buf, "%d%d%d%d", &x, &y, &x2, &y2);
-                break; // tego breaka wywalic
-                /*
+
                 if (p[x][y] == PUSTE) break; // wychdzi
                 if (p[x][y] > 5) { // czy figura ktora chce sie ruszyc jest jego // to puste dla testow, abym mogl testowac pustym polem
                     // ta kolejnosc, bo jesli p[x][y] == PUSTE, to nie sprawdza kolejnego
@@ -275,8 +274,9 @@ int main()
                     status = send(gniazdo1, "nie trolluj\n", strlen(buf),0);
                     continue;
                 }
-                ruch = 1; */
+                ruch = 1;
             }
+            if(blad) break; // jesli jest blad przy odbiorze, rozlacza
             ruch = 0;
             if (p[x][y] == 5 && y2 == 0) p[x2][y2] = 1; // promocja do hetmana pionka gracza
             else p[x2][y2] = p[x][y];
@@ -296,7 +296,6 @@ int main()
         if (strcmp(buf, "Q") == 0) {printf("Zakonczylismy polaczenie\n");}
         closesocket(gniazdo1);
     }
-
     closesocket(gniazdo_root);
     WSACleanup();
     return 0;
