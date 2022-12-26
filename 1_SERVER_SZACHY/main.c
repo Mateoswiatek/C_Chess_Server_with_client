@@ -296,6 +296,7 @@ int main()
         if (strcmp(buf, "Q") == 0) {printf("Zakonczylismy polaczenie\n");}
         closesocket(gniazdo1);
     }
+
     closesocket(gniazdo_root);
     WSACleanup();
     return 0;
