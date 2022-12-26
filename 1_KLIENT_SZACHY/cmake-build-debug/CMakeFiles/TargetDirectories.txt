@@ -1,0 +1,3 @@
+D:/PROJEKTY/SOCKETY_SZACHY/1_KLIENT_SZACHY/cmake-build-debug/CMakeFiles/1_KLIENT_SZACHY.dir
+D:/PROJEKTY/SOCKETY_SZACHY/1_KLIENT_SZACHY/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/PROJEKTY/SOCKETY_SZACHY/1_KLIENT_SZACHY/cmake-build-debug/CMakeFiles/rebuild_cache.dir
