@@ -31,17 +31,19 @@ int main() {
     while(1) {
         status = recv(gniazdo1, buf, (sizeof buf) - 1,0); // odbieram 200 znaków, status "zapisuje od 0 do 198" do "buf"
         if (status <= 0) { printf("blad recv\n"); break;}
-
         buf[status] = '\0';
-        printf("Plansza:#%s#\n", buf);
-        if (strcmp(buf, "Q") == 0) {printf("Serwer zakonczyl polaczenie, domysl sie czy wygrales czy przegrales\n"); break;}
+        if (buf[0]=='Q') {
+            char *wiadomosc = buf+2;
+            printf("Wynk gry: %s\n", wiadomosc);
+            break;
+        }
 
+        printf("Plansza:#%s#\n", buf);
         printf("Poddaj sie: Q\npodaj ruch: i/j\n");
         scanf("%s", buf);
 
         status = send(gniazdo1, buf, strlen(buf),0); // wysyła z gniazda1 zawartość buffa o długości bufa na podany port adresu IP
         if (strcmp(buf, "Q") == 0) {printf("Zakonczyles polaczenie\n"); break;}
-        //printf("wysylam: #%s#\n", buf);
     }
     closesocket(gniazdo1);
     WSACleanup();

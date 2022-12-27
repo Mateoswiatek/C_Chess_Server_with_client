@@ -217,9 +217,6 @@ int main()
         blad=0;
         printf("Oczekiwanie na polaczenie...\n");
 
-        // w przyszlosci
-        // dorobic akceptowanie przez nas polaczen przychodzacaych, wyswietlic ilosc, opcje na odswiezenie akceptowanie konkretnego
-
         // na gniazdo_root, z adresu clienta, o dlugosci adresu klienta
         gniazdo1 = accept(gniazdo_root, (struct sockaddr *) &client, &dlugosc);
         if (gniazdo1 == -1) {
@@ -264,8 +261,8 @@ int main()
                 x2=buf[2] - '0';
                 y2=buf[3] - '0';
 
-                if (p[x][y] == PUSTE) break; // wychdzi
-                if (p[x][y] > 5) { // czy figura ktora chce sie ruszyc jest jego // to puste dla testow, abym mogl testowac pustym polem
+                if (p[x][y] == PUSTE) break; // wychdzi, to puste dla testow, abym mogl testowac pustym polem
+                if (p[x][y] > 5) { // czy figura ktora chce sie ruszyc jest jego
                     // ta kolejnosc, bo jesli p[x][y] == PUSTE, to nie sprawdza kolejnego
                     status = send(gniazdo1, "rusz sie swoja figura gosciu\n", strlen(buf),0);
                     continue;
@@ -278,22 +275,22 @@ int main()
             }
             if(blad) break; // jesli jest blad przy odbiorze, rozlacza
             ruch = 0;
-            if (p[x][y] == 5 && y2 == 0) p[x2][y2] = 1; // promocja do hetmana pionka gracza
+            if (p[x][y] == 5 && y2 == 0) p[x2][y2] = 1;
             else p[x2][y2] = p[x][y];
             p[x][y] = PUSTE;
 
-            printf("%d,%d,%d,%d; \n", x, y, x2, y2);
             if (ocena() >= WYGRANA / 2) { // sprawdza czy komp wygral
-                printf("Komputer wygral!");
+                strcpy(buf, "Q Przegrales");
+                status = send(gniazdo1, buf, strlen(buf),0);
+                printf("wysylam : #%s#\n", buf);
                 break;
-            } else if (ocena() <= PRZEGRANA / 2) { // sprawdza czy komp przegral
-                printf("Wygrales!");
+            } else if (ocena() <= PRZEGRANA / 2) {
+                strcpy(buf, "Q Wygrales");
+                status = send(gniazdo1, buf, strlen(buf),0);
+                printf("wysylam : #%s#\n", buf);
                 break;
             }
         }
-        status = send(gniazdo1, "Q", strlen(buf),0); // wysylamy odpowiedz do gniazda 1, zawartosc buf, dlugosc bufa
-        printf("wysylam : #%s#\n", buf);
-        if (strcmp(buf, "Q") == 0) {printf("Zakonczylismy polaczenie\n");}
         closesocket(gniazdo1);
     }
     closesocket(gniazdo_root);
